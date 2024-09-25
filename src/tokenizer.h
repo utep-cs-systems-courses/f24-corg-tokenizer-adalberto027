@@ -5,17 +5,26 @@
 /* Return true (non-zero) if c is a whitespace characer
    ('\t' or ' ').  
    Zero terminators are not printable (therefore false) */
-int space_char(char c);
+int space_char(char c){
+   return (c == ' ' || c == '\t'); /*return one if it is ' ' or tabularot 0 in anyother case*/
+}
 
 /* Return true (non-zero) if c is a non-whitespace 
    character (not tab or space).  
    Zero terminators are not printable (therefore false) */ 
-int non_space_char(char c);
+int non_space_char(char c){
+   return (c != ' ' && c != '\t');
+}
 
 /* Returns a pointer to the first character of the next 
    space-separated token in zero-terminated str.  Return a zero pointer if 
    str does not contain any tokens. */
-char *token_start(char *str); 
+char *token_start(char *str){
+   while (*str && space_char(*str)) {
+      str++;
+   }
+   return (*str) ? str : NULL;  // Devuelve NULL si no hay tokens
+}
 
 /* Returns a pointer terminator char following *token */
 char *token_terminator(char *token);
