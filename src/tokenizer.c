@@ -1,5 +1,5 @@
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdlib.h>  // Para free
 #include "tokenizer.h"
 
 int space_char(char c) {
