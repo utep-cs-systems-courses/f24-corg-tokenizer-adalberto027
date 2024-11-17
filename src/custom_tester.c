@@ -24,6 +24,17 @@ int main() {
     char *end = token_terminator(str2);
     printf("token_terminator(\"hello world\") = %c (Expected: ' ')\n", *end);
 
+    // Prueba para count_tokens
+    printf("\nTesting count_tokens...\n");
+    char str3[] = "  hello world this is a test  ";
+    printf("count_tokens(\"  hello world this is a test  \") = %d (Expected: 5)\n", count_tokens(str3));
+
+    // Prueba para copy_str
+    printf("\nTesting copy_str...\n");
+    char str4[] = "hello";
+    char *copy = copy_str(str4, 5);
+    printf("copy_str(\"hello\", 5) = %s (Expected: 'hello')\n", copy);
+    free(copy); // Liberar memoria asignada dinámicamente
+
     return 0;
 }
-
