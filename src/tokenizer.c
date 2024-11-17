@@ -23,3 +23,22 @@ char *token_terminator(char *token){
   }
   return token;
 }
+
+int count_tokens(char *str){
+  int count = 0;
+  while ((str = token_start(str))){
+    count++;
+    str = token_terminator(str);
+  }
+  return count;
+}
+
+char *copy_str(char *inStr, short len){
+  char *copy = malloc((len + 1) * sizeof(char));
+  if (!copy){
+    return NULL;
+  }
+  strncpy(copy, inStr, len);
+  copy[len] = '\0';
+  return copy;
+}
