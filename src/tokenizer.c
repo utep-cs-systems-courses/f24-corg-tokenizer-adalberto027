@@ -1,21 +1,20 @@
-#include <string.h>
+#include <stdlib.h>
 #include <stdio.h>
 #include "tokenizer.h"
-#include "history.h"
 
 int space_char(char c) {
-    return c == ' ' || c == '\t';
+    return (c == ' ' || c == '\t');
 }
 
 int non_space_char(char c) {
-    return !space_char(c);
+    return (c != '\0' && !space_char(c));
 }
 
 char *token_start(char *str) {
-    while (*str && space_char(*str)) {
+    while (*str && !non_space_char(*str)) {
         str++;
     }
-    return (*str) ? str : NULL;
+    return str;
 }
 
 char *token_terminator(char *token) {
@@ -27,20 +26,63 @@ char *token_terminator(char *token) {
 
 int count_tokens(char *str) {
     int count = 0;
-    while ((str = token_start(str))) {
+    char *temp = token_start(str);
+
+    while (*temp) {
         count++;
-        str = token_terminator(str);
+        temp = token_terminator(temp);
+        temp = token_start(temp);
     }
     return count;
 }
 
 char *copy_str(char *inStr, short len) {
-    static char buffer[256]; // Tamaño máximo del buffer.
-    if (len >= sizeof(buffer)) {
-        len = sizeof(buffer) - 1; // Limita la longitud al tamaño del buffer.
+    char *str_copy = malloc((len + 1) * sizeof(char));
+    if (!str_copy) {
+        printf("Memory allocation failed.\n");
+        exit(1);
     }
-    strncpy(buffer, inStr, len);
-    buffer[len] = '\0';
-    return buffer;
+
+    for (int i = 0; i < len; i++) {
+        str_copy[i] = inStr[i];
+    }
+    str_copy[len] = '\0'; // Null-terminate the string
+    return str_copy;
 }
 
+char **tokenize(char *str) {
+    int num_tokens = count_tokens(str);
+    char **tokens = malloc((num_tokens + 1) * sizeof(char *));
+    if (!tokens) {
+        printf("Memory allocation failed.\n");
+        exit(1);
+    }
+
+    char *token = str;
+    for (int i = 0; i < num_tokens; i++) {
+        token = token_start(token);
+        char *token_end = token_terminator(token);
+        int len = token_end - token;
+        tokens[i] = copy_str(token, len);
+        token = token_end;
+    }
+    tokens[num_tokens] = NULL; // Null-terminate the array
+    return tokens;
+}
+
+void print_tokens(char **tokens) {
+    int i = 0;
+    while (tokens[i]) {
+        printf("Token #%d: %s\n", i, tokens[i]);
+        i++;
+    }
+}
+
+void free_tokens(char **tokens) {
+    int i = 0;
+    while (tokens[i]) {
+        free(tokens[i]);
+        i++;
+    }
+    free(tokens);
+}
